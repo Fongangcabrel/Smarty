@@ -1,0 +1,1630 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DriveConnect - Driver Dashboard</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --danger: #f72585;
+            --warning: #f77f00;
+            --success: #4cc9f0;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --gray: #adb5bd;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+        }
+        
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            background-image: url(assets/images/logo/logo.jpg);
+        }
+        
+        .login-box {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 400px;
+            text-align: center;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+        
+        .login-box:hover {
+            transform: translateY(-25px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .login-box h1 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .login-box p {
+            color: var(--dark);
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .login-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+        
+        .header {
+            background-color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h2 {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        .driver-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .driver-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .driver-info h4 {
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .driver-info p {
+            color: var(--gray);
+            font-size: 12px;
+        }
+        
+        .main-content {
+            padding: 6rem 2rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 1.5rem;
+        }
+        
+        .map-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #e0e0e0, #f5f5f5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-header h3 {
+            color: var(--dark);
+            font-size: 18px;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+        
+        .ride-request {
+            margin-top: 1.5rem;
+        }
+        
+        .ride-info {
+            display: grid;
+            grid-template-columns: 40px 1fr;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .ride-location {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .location-point {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .point-icon {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .pickup .point-icon {
+            background-color: var(--success);
+        }
+        
+        .dropoff .point-icon {
+            background-color: var(--danger);
+        }
+        
+        .location-details h4 {
+            font-size: 14px;
+            color: var(--dark);
+        }
+        
+        .location-details p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .divider {
+            height: 15px;
+            border-left: 2px dashed var(--gray);
+            margin-left: 5px;
+        }
+        
+        .ride-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .meta-item {
+            text-align: center;
+        }
+        
+        .meta-item h4 {
+            font-size: 14px;
+            color: var(--dark);
+        }
+        
+        .meta-item p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+        
+        .btn {
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .earnings-card {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .earning-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .earning-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .earning-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .earning-icon.primary {
+            background-color: var(--primary);
+        }
+        
+        .earning-icon.success {
+            background-color: var(--success);
+        }
+        
+        .earning-icon.warning {
+            background-color: var(--warning);
+        }
+        
+        .earning-label h4 {
+            font-size: 14px;
+            color: var(--dark);
+        }
+        
+        .earning-amount {
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .stat-card {
+            background-color: rgba(67, 97, 238, 0.05);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            color: var(--primary);
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            color: var(--gray);
+            font-size: 12px;
+        }
+        
+        .online-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--success);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .driver-drive-mode {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .drive-mode-label {
+            font-size: 14px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        /* Ride Request Notification */
+        .ride-notification {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 1.5rem;
+            width: 400px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .notification-header h3 {
+            color: var(--primary);
+        }
+        
+        .notification-timer {
+            background-color: rgba(247, 37, 133, 0.1);
+            color: var(--danger);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Wallet Section */
+        .wallet-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .wallet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .wallet-header h3 {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .wallet-amount {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .wallet-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .wallet-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .wallet-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .wallet-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Transaction History */
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .transaction-details {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .transaction-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .transaction-info h4 {
+            font-size: 14px;
+            margin: 0 0 3px 0;
+        }
+
+        .transaction-info p {
+            font-size: 12px;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .transaction-amount {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .transaction-amount.credit {
+            color: var(--success);
+        }
+
+        .transaction-amount.debit {
+            color: var(--danger);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            padding: 1.5rem;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--primary);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .modal-body {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        .form-group input, 
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .modal-btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .modal-btn-secondary {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        /* Ride Status Cards */
+        .ride-status-card {
+            display: none;
+            margin-top: 1.5rem;
+        }
+
+        .ride-status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .ride-status-header h3 {
+            color: var(--dark);
+            font-size: 18px;
+        }
+
+        .ride-status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-in-progress {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+
+        .status-completed {
+            background-color: rgba(33, 150, 243, 0.1);
+            color: #2196F3;
+        }
+
+        .ride-status-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #2ecc71;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #f39c12;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .main-content {
+                padding: 5rem 1rem 1rem;
+            }
+            
+            .ride-notification {
+                width: 90%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-box">
+            <h1>SMART CITY<span>DriverConnect</span></h1>
+            <p>Driver Dashboard - Manage your rides and earnings</p>
+            <div class="input-group">
+                <label for="driverId">Driver ID</label>
+                <input type="text" id="driverId" placeholder="Enter your driver ID">
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password">
+            </div>
+            <button class="login-btn" onclick="login()">Go Online</button>
+        </div>
+    </div>
+    
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <h2>SMART CITY<span>DriverConnect</span></h2>
+            </div>
+            <div class="driver-profile">
+                <div class="driver-avatar" id="driverAvatar">JD</div>
+                <div class="driver-info">
+                    <h4 id="driverName">John Doe</h4>
+                    <p id="driverRating">⭐ 4.8 (120 rides)</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="map-container" id="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d15886.56223805416!2d10.417310283362449!3d5.471372572598232!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1s0x105f9aa9332faf33%3A0xcd6d3c41ff91e0c6!2seveche%2C%20FCGJ%2B5VR%2C%20Bafoussam!3m2!1d5.4754875!2d10.4322272!4m5!1s0x105f900ba164ac93%3A0x6960fb401f849922!2sLyc%C3%A9e%20Classique%20de%20Bafoussam%2C%20Bored%2C%20Bafoussam!3m2!1d5.4676089!2d10.4218906!5e0!3m2!1sfr!2scm!4v1742631857658!5m2!1sfr!2scm" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Wallet Card -->
+                <div class="wallet-card" id="walletCard">
+                    <div class="wallet-header">
+                        <h3>Driver Wallet</h3>
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="wallet-amount" id="walletAmount">0 XAF</div>
+                    <div class="wallet-details">
+                        <span>Available Balance</span>
+                        <span>Last updated: <span id="lastUpdated">Just now</span></span>
+                    </div>
+                    <div class="wallet-actions">
+                        <button class="wallet-btn" onclick="showWithdrawModal()"><i class="fas fa-money-bill-wave"></i> Withdraw</button>
+                        <button class="wallet-btn" onclick="showTransactionHistory()"><i class="fas fa-history"></i> History</button>
+                    </div>
+                </div>
+                
+                <!-- Ride Request Card -->
+                <div class="card" id="rideRequestCard">
+                    <div class="card-header">
+                        <h3>New Ride Request</h3>
+                        <span class="status-badge">New</span>
+                    </div>
+                    <div class="ride-request">
+                        <div class="ride-info">
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <div class="point-icon pickup"></div>
+                                <div class="divider"></div>
+                                <div class="point-icon dropoff"></div>
+                            </div>
+                            <div class="ride-location">
+                                <div class="location-point pickup">
+                                    <div class="location-details">
+                                        <h4>Eveche 2eme carrefour</h4>
+                                        <p>IME</p>
+                                    </div>
+                                </div>
+                                <div class="location-point dropoff">
+                                    <div class="location-details">
+                                        <h4>Socada</h4>
+                                        <p>Marche</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ride-meta">
+                            <div class="meta-item">
+                                <h4>Distance</h4>
+                                <p>4.2 km</p>
+                            </div>
+                            <div class="meta-item">
+                                <h4>Est. Time</h4>
+                                <p>10 min</p>
+                            </div>
+                            <div class="meta-item">
+                                <h4>Fare</h4>
+                                <p>400XAF</p>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" onclick="acceptRide()">Accept</button>
+                            <button class="btn btn-outline" onclick="declineRide()">Decline</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ride Status Card (shown after accepting a ride) -->
+                <div class="card ride-status-card" id="rideStatusCard">
+                    <div class="ride-status-header">
+                        <h3 id="rideStatusTitle">Ride In Progress</h3>
+                        <span class="ride-status-badge status-in-progress" id="rideStatusBadge">In Progress</span>
+                    </div>
+                    <div class="ride-request">
+                        <div class="ride-info">
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <div class="point-icon pickup"></div>
+                                <div class="divider"></div>
+                                <div class="point-icon dropoff"></div>
+                            </div>
+                            <div class="ride-location">
+                                <div class="location-point pickup">
+                                    <div class="location-details">
+                                        <h4 id="currentPickupLocation">Eveche 2eme carrefour</h4>
+                                        <p>IME</p>
+                                    </div>
+                                </div>
+                                <div class="location-point dropoff">
+                                    <div class="location-details">
+                                        <h4 id="currentDropoffLocation">Socada</h4>
+                                        <p>Marche</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ride-meta">
+                            <div class="meta-item">
+                                <h4>Distance</h4>
+                                <p id="currentRideDistance">4.2 km</p>
+                            </div>
+                            <div class="meta-item">
+                                <h4>Est. Time</h4>
+                                <p id="currentRideTime">10 min</p>
+                            </div>
+                            <div class="meta-item">
+                                <h4>Fare</h4>
+                                <p id="currentRideFare">400XAF</p>
+                            </div>
+                        </div>
+                        <div class="ride-status-actions" id="rideStatusActions">
+                            <!-- Buttons will be added dynamically based on ride state -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Earnings Card -->
+                <div class="card earnings-card">
+                    <div class="card-header">
+                        <h3>Today's Earnings</h3>
+                    </div>
+                    <div class="earning-item">
+                        <div class="earning-label">
+                            <div class="earning-icon primary">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <h4>Total Earnings</h4>
+                        </div>
+                        <span class="earning-amount" id="todayEarnings">0 XAF</span>
+                    </div>
+                    <div class="earning-item">
+                        <div class="earning-label">
+                            <div class="earning-icon success">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <h4>Completed Rides</h4>
+                        </div>
+                        <span class="earning-amount" id="completedRides">0</span>
+                    </div>
+                    <div class="earning-item">
+                        <div class="earning-label">
+                            <div class="earning-icon warning">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <h4>Online Time</h4>
+                        </div>
+                        <span class="earning-amount">3h 42m</span>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>4.8</h3>
+                            <p>Avg. Rating</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>92%</h3>
+                            <p>Acceptance</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Online Status -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Drive Mode</h3>
+                    </div>
+                    <div class="online-toggle">
+                        <div class="driver-drive-mode">
+                            <span class="drive-mode-label" id="driveModeLabel">Online</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="onlineToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ride Notification -->
+        <div class="ride-notification" id="rideNotification">
+            <div class="notification-header">
+                <h3>New Ride Request</h3>
+                <span class="notification-timer" id="notificationTimer">30s</span>
+            </div>
+            <div class="ride-info">
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="point-icon pickup"></div>
+                    <div class="divider"></div>
+                    <div class="point-icon dropoff"></div>
+                </div>
+                <div class="ride-location">
+                    <div class="location-point pickup">
+                        <div class="location-details">
+                            <h4>zingana</h4>
+                        </div>
+                    </div>
+                    <div class="location-point dropoff">
+                        <div class="location-details">
+                            <h4>Maetur</h4>
+                            <p>rond point</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ride-meta">
+                <div class="meta-item">
+                    <h4>Distance</h4>
+                    <p>6.3 km</p>
+                </div>
+                <div class="meta-item">
+                    <h4>Est. Time</h4>
+                    <p>10 min</p>
+                </div>
+                <div class="meta-item">
+                    <h4>Fare</h4>
+                    <p>500XAF</p>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="acceptNotificationRide()">Accept</button>
+                <button class="btn btn-outline" onclick="declineNotificationRide()">Decline</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="confirmationModalTitle">Confirm Action</h3>
+                <button class="close-modal" onclick="closeModal('confirmationModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="confirmationModalBody">
+                <!-- Content will be added dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('confirmationModal')">Cancel</button>
+                <button class="modal-btn modal-btn-primary" id="confirmActionBtn" onclick="processConfirmation()">Confirm</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Withdraw Modal -->
+    <div class="modal" id="withdrawModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Withdraw Funds</h3>
+                <button class="close-modal" onclick="closeModal('withdrawModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="withdrawAmount">Amount (XAF)</label>
+                    <input type="number" id="withdrawAmount" placeholder="Enter amount to withdraw">
+                </div>
+                <div class="form-group">
+                    <label for="withdrawMethod">Payment Method</label>
+                    <select id="withdrawMethod">
+                        <option value="orange">Orange Money</option>
+                        <option value="mtn">MTN Mobile Money</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="tel" id="phoneNumber" placeholder="Enter your phone number">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('withdrawModal')">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="processWithdrawal()">Withdraw</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Transaction History Modal -->
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Transaction History</h3>
+                <button class="close-modal" onclick="closeModal('historyModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="transactionHistory">
+                <!-- Transactions will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-primary" onclick="closeModal('historyModal')">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Driver credentials (for demo purposes)
+        const drivers = {
+            "DRV-1001": { 
+                password: "driver123", 
+                name: "John Doe", 
+                rating: "4.8",
+                walletBalance: 0,
+                transactions: [],
+                todayEarnings: 0,
+                completedRides: 0,
+                currentRide: null
+            },
+            "DRV-1002": { 
+                password: "driver456", 
+                name: "Sarah Smith", 
+                rating: "4.9",
+                walletBalance: 0,
+                transactions: [],
+                todayEarnings: 0,
+                completedRides: 0,
+                currentRide: null
+            },
+            "DRV-1003": { 
+                password: "driver789", 
+                name: "Mike Johnson", 
+                rating: "4.7",
+                walletBalance: 0,
+                transactions: [],
+                todayEarnings: 0,
+                completedRides: 0,
+                currentRide: null
+            }
+        };
+        
+        // Current driver data
+        let currentDriver = null;
+        let currentAction = null;
+        
+        // Login function
+        function login() {
+            const driverId = document.getElementById('driverId').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (drivers[driverId] && drivers[driverId].password === password) {
+                currentDriver = drivers[driverId];
+                
+                // Update UI with driver info
+                document.getElementById('driverName').textContent = currentDriver.name;
+                document.getElementById('driverRating').textContent = `⭐ ${currentDriver.rating} (120 rides)`;
+                document.getElementById('driverAvatar').textContent = 
+                    currentDriver.name.split(' ').map(n => n[0]).join('');
+                
+                // Update wallet and earnings
+                updateWalletDisplay();
+                updateEarningsDisplay();
+                
+                // Show dashboard
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                
+                // Simulate ride request after 10 seconds
+                setTimeout(showRideNotification, 10000);
+            } else {
+                alert('Invalid driver ID or password. Please try again.');
+            }
+        }
+        
+        // Update wallet display
+        function updateWalletDisplay() {
+            document.getElementById('walletAmount').textContent = `${currentDriver.walletBalance} XAF`;
+            document.getElementById('todayEarnings').textContent = `${currentDriver.todayEarnings} XAF`;
+            document.getElementById('completedRides').textContent = currentDriver.completedRides;
+            document.getElementById('lastUpdated').textContent = 'Just now';
+        }
+        
+        // Update earnings display
+        function updateEarningsDisplay() {
+            document.getElementById('todayEarnings').textContent = `${currentDriver.todayEarnings} XAF`;
+            document.getElementById('completedRides').textContent = currentDriver.completedRides;
+        }
+        
+        // Add earnings to wallet (70% of ride fare)
+        function addEarnings(fare) {
+            const earnings = Math.round(fare * 0.7); // Driver gets 70% of the fare
+            currentDriver.walletBalance += earnings;
+            currentDriver.todayEarnings += earnings;
+            currentDriver.completedRides += 1;
+            
+            // Add transaction record
+            currentDriver.transactions.unshift({
+                id: Date.now(),
+                type: 'credit',
+                amount: earnings,
+                description: 'Ride earnings',
+                date: new Date().toLocaleString(),
+                status: 'completed'
+            });
+            
+            updateWalletDisplay();
+            updateEarningsDisplay();
+            
+            return earnings;
+        }
+        
+        // Toggle online status
+        document.getElementById('onlineToggle').addEventListener('change', function() {
+            const label = document.getElementById('driveModeLabel');
+            if (this.checked) {
+                label.textContent = 'Online';
+                label.style.color = 'var(--success)';
+                // Simulate new ride request when going online
+                setTimeout(showRideNotification, 10000);
+            } else {
+                label.textContent = 'Offline';
+                label.style.color = 'var(--danger)';
+                // Hide any active notifications
+                hideRideNotification();
+            }
+        });
+        
+        // Ride notification functions
+        function showRideNotification() {
+            // Only show if driver is online
+            if (!document.getElementById('onlineToggle').checked) return;
+            
+            const notification = document.getElementById('rideNotification');
+            notification.style.display = 'block';
+            
+            // Countdown timer
+            let timeLeft = 30;
+            const timer = document.getElementById('notificationTimer');
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                timer.textContent = `${timeLeft}s`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    hideRideNotification();
+                    // Simulate another ride request after a delay
+                    setTimeout(showRideNotification, 5000);
+                }
+            }, 1000);
+        }
+        
+        function hideRideNotification() {
+            document.getElementById('rideNotification').style.display = 'none';
+        }
+        
+        function acceptNotificationRide() {
+            // Create a ride object
+            const ride = {
+                id: 'RIDE-' + Date.now(),
+                pickup: 'zingana',
+                dropoff: 'Maetur rond point',
+                distance: '6.3 km',
+                time: '10 min',
+                fare: 500,
+                status: 'accepted'
+            };
+            
+            // Set as current ride
+            currentDriver.currentRide = ride;
+            
+            // Hide notification
+            hideRideNotification();
+            
+            // Show ride status card
+            showRideStatus(ride);
+            
+            // Show pickup confirmation
+            setTimeout(() => {
+                showConfirmation('pickup', ride);
+            }, 2000);
+        }
+        
+        function declineNotificationRide() {
+            alert('Ride declined.');
+            hideRideNotification();
+            // Simulate new ride request after 5 seconds
+            setTimeout(showRideNotification, 5000);
+        }
+        
+        // Ride card functions
+        function acceptRide() {
+            // Create a ride object
+            const ride = {
+                id: 'RIDE-' + Date.now(),
+                pickup: 'Eveche 2eme carrefour',
+                dropoff: 'Socada Marche',
+                distance: '4.2 km',
+                time: '10 min',
+                fare: 400,
+                status: 'accepted'
+            };
+            
+            // Set as current ride
+            currentDriver.currentRide = ride;
+            
+            // Hide request card
+            document.getElementById('rideRequestCard').style.display = 'none';
+            
+            // Show ride status card
+            showRideStatus(ride);
+            
+            // Show pickup confirmation
+            setTimeout(() => {
+                showConfirmation('pickup', ride);
+            }, 2000);
+        }
+        
+        function declineRide() {
+            document.getElementById('rideRequestCard').style.display = 'none';
+            alert('Ride declined.');
+            // Simulate new ride request after 3 seconds
+            setTimeout(() => {
+                document.getElementById('rideRequestCard').style.display = 'block';
+            }, 5000);
+        }
+        
+        // Show ride status
+        function showRideStatus(ride) {
+            document.getElementById('currentPickupLocation').textContent = ride.pickup;
+            document.getElementById('currentDropoffLocation').textContent = ride.dropoff;
+            document.getElementById('currentRideDistance').textContent = ride.distance;
+            document.getElementById('currentRideTime').textContent = ride.time;
+            document.getElementById('currentRideFare').textContent = ride.fare + 'XAF';
+            
+            // Update status based on ride state
+            if (ride.status === 'accepted') {
+                document.getElementById('rideStatusTitle').textContent = 'Ride Accepted';
+                document.getElementById('rideStatusBadge').textContent = 'Accepted';
+                document.getElementById('rideStatusBadge').className = 'ride-status-badge status-in-progress';
+                
+                // Show pickup button
+                const actionsDiv = document.getElementById('rideStatusActions');
+                actionsDiv.innerHTML = `
+                    <button class="btn btn-success" onclick="showConfirmation('pickup', currentDriver.currentRide)">
+                        <i class="fas fa-check"></i> Confirm Pickup
+                    </button>
+                    <button class="btn btn-danger" onclick="cancelRide()">
+                        <i class="fas fa-times"></i> Cancel Ride
+                    </button>
+                `;
+            } else if (ride.status === 'in-progress') {
+                document.getElementById('rideStatusTitle').textContent = 'Ride In Progress';
+                document.getElementById('rideStatusBadge').textContent = 'In Progress';
+                document.getElementById('rideStatusBadge').className = 'ride-status-badge status-in-progress';
+                
+                // Show dropoff button
+                const actionsDiv = document.getElementById('rideStatusActions');
+                actionsDiv.innerHTML = `
+                    <button class="btn btn-success" onclick="showConfirmation('dropoff', currentDriver.currentRide)">
+                        <i class="fas fa-check"></i> Confirm Dropoff
+                    </button>
+                    <button class="btn btn-warning" onclick="showEmergencyModal()">
+                        <i class="fas fa-exclamation-triangle"></i> Emergency
+                    </button>
+                `;
+            } else if (ride.status === 'completed') {
+                document.getElementById('rideStatusTitle').textContent = 'Ride Completed';
+                document.getElementById('rideStatusBadge').textContent = 'Completed';
+                document.getElementById('rideStatusBadge').className = 'ride-status-badge status-completed';
+                
+                // Show completed message
+                const actionsDiv = document.getElementById('rideStatusActions');
+                actionsDiv.innerHTML = `
+                    <button class="btn btn-primary" onclick="finishRide()">
+                        <i class="fas fa-check-circle"></i> Finish Ride
+                    </button>
+                `;
+            }
+            
+            // Show the status card
+            document.getElementById('rideStatusCard').style.display = 'block';
+        }
+        
+        // Show confirmation modal
+        function showConfirmation(action, ride) {
+            currentAction = action;
+            
+            if (action === 'pickup') {
+                document.getElementById('confirmationModalTitle').textContent = 'Confirm Pickup';
+                document.getElementById('confirmationModalBody').innerHTML = `
+                    <p>Please confirm you have picked up the passenger at:</p>
+                    <p><strong>${ride.pickup}</strong></p>
+                    <p>This will start the ride and begin tracking.</p>
+                `;
+            } else if (action === 'dropoff') {
+                document.getElementById('confirmationModalTitle').textContent = 'Confirm Dropoff';
+                document.getElementById('confirmationModalBody').innerHTML = `
+                    <p>Please confirm you have dropped off the passenger at:</p>
+                    <p><strong>${ride.dropoff}</strong></p>
+                    <p>Fare: <strong>${ride.fare}XAF</strong> (You will receive ${Math.round(ride.fare * 0.7)}XAF)</p>
+                `;
+            }
+            
+            document.getElementById('confirmActionBtn').onclick = function() {
+                processConfirmation(action, ride);
+            };
+            
+            document.getElementById('confirmationModal').style.display = 'flex';
+        }
+        
+        // Process confirmation
+        function processConfirmation(action, ride) {
+            if (action === 'pickup') {
+                // Update ride status
+                ride.status = 'in-progress';
+                currentDriver.currentRide = ride;
+                
+                // Update UI
+                showRideStatus(ride);
+                
+                // Close modal
+                closeModal('confirmationModal');
+                
+                // Show dropoff confirmation after some time (simulating ride duration)
+                setTimeout(() => {
+                    showConfirmation('dropoff', ride);
+                }, 10000);
+                
+            } else if (action === 'dropoff') {
+                // Complete the ride
+                ride.status = 'completed';
+                currentDriver.currentRide = ride;
+                
+                // Add earnings to wallet (70% of fare)
+                const earnings = addEarnings(ride.fare);
+                
+                // Update UI
+                showRideStatus(ride);
+                
+                // Close modal
+                closeModal('confirmationModal');
+                
+                // Show success message
+                alert(`Ride completed successfully! ${earnings}XAF has been added to your wallet.`);
+            }
+        }
+        
+        // Cancel current ride
+        function cancelRide() {
+            if (!currentDriver.currentRide) return;
+            
+            document.getElementById('confirmationModalTitle').textContent = 'Cancel Ride';
+            document.getElementById('confirmationModalBody').innerHTML = `
+                <p>Are you sure you want to cancel this ride?</p>
+                <p>This action cannot be undone and may affect your driver rating.</p>
+            `;
+            
+            document.getElementById('confirmActionBtn').className = 'modal-btn modal-btn-danger';
+            document.getElementById('confirmActionBtn').innerHTML = '<i class="fas fa-times"></i> Confirm Cancel';
+            document.getElementById('confirmActionBtn').onclick = function() {
+                // Hide status card
+                document.getElementById('rideStatusCard').style.display = 'none';
+                
+                // Show request card again
+                document.getElementById('rideRequestCard').style.display = 'block';
+                
+                // Clear current ride
+                currentDriver.currentRide = null;
+                
+                // Close modal
+                closeModal('confirmationModal');
+                
+                // Show message
+                alert('Ride has been cancelled.');
+                
+                // Simulate new ride request
+                setTimeout(showRideNotification, 5000);
+            };
+            
+            document.getElementById('confirmationModal').style.display = 'flex';
+        }
+        
+        // Finish ride (after completion)
+        function finishRide() {
+            // Hide status card
+            document.getElementById('rideStatusCard').style.display = 'none';
+            
+            // Show request card again
+            document.getElementById('rideRequestCard').style.display = 'block';
+            
+            // Clear current ride
+            currentDriver.currentRide = null;
+            
+            // Simulate new ride request
+            setTimeout(showRideNotification, 5000);
+        }
+        
+        // Show emergency modal
+        function showEmergencyModal() {
+            document.getElementById('confirmationModalTitle').textContent = 'Emergency Assistance';
+            document.getElementById('confirmationModalBody').innerHTML = `
+                <p>Please confirm if you need emergency assistance.</p>
+                <p>Your location and ride details will be shared with authorities.</p>
+            `;
+            
+            document.getElementById('confirmActionBtn').className = 'modal-btn modal-btn-warning';
+            document.getElementById('confirmActionBtn').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Call Emergency';
+            document.getElementById('confirmActionBtn').onclick = function() {
+                closeModal('confirmationModal');
+                alert('Emergency services have been notified. Help is on the way!');
+            };
+            
+            document.getElementById('confirmationModal').style.display = 'flex';
+        }
+        
+        // Wallet functions
+        function showWithdrawModal() {
+            document.getElementById('withdrawModal').style.display = 'flex';
+            document.getElementById('withdrawAmount').value = '';
+            document.getElementById('phoneNumber').value = '';
+        }
+        
+        function showTransactionHistory() {
+            const historyContainer = document.getElementById('transactionHistory');
+            historyContainer.innerHTML = '';
+            
+            if (currentDriver.transactions.length === 0) {
+                historyContainer.innerHTML = '<p>No transactions yet.</p>';
+            } else {
+                currentDriver.transactions.forEach(transaction => {
+                    const transactionDiv = document.createElement('div');
+                    transactionDiv.className = 'transaction-item';
+                    
+                    transactionDiv.innerHTML = `
+                        <div class="transaction-details">
+                            <div class="transaction-icon">
+                                <i class="fas fa-${transaction.type === 'credit' ? 'arrow-down' : 'arrow-up'}"></i>
+                            </div>
+                            <div class="transaction-info">
+                                <h4>${transaction.description}</h4>
+                                <p>${transaction.date}</p>
+                            </div>
+                        </div>
+                        <div class="transaction-amount ${transaction.type}">
+                            ${transaction.type === 'credit' ? '+' : '-'}${transaction.amount} XAF
+                        </div>
+                    `;
+                    
+                    historyContainer.appendChild(transactionDiv);
+                });
+            }
+            
+            document.getElementById('historyModal').style.display = 'flex';
+        }
+        
+        function processWithdrawal() {
+            const amount = parseInt(document.getElementById('withdrawAmount').value);
+            const method = document.getElementById('withdrawMethod').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            if (amount > currentDriver.walletBalance) {
+                alert('Insufficient funds in your wallet');
+                return;
+            }
+            
+            if (!phoneNumber) {
+                alert('Please enter your phone number');
+                return;
+            }
+            
+            // Process withdrawal
+            currentDriver.walletBalance -= amount;
+            
+            // Add transaction record
+            currentDriver.transactions.unshift({
+                id: Date.now(),
+                type: 'debit',
+                amount: amount,
+                description: `Withdrawal to ${method}`,
+                date: new Date().toLocaleString(),
+                status: 'processing'
+            });
+            
+            updateWalletDisplay();
+            closeModal('withdrawModal');
+            
+            alert(`Withdrawal request of ${amount}XAF to ${method} (${phoneNumber}) submitted. Funds will be processed within 24 hours.`);
+            
+            // Simulate withdrawal completion after some time
+            setTimeout(() => {
+                const transaction = currentDriver.transactions.find(t => t.id === currentDriver.transactions[0].id);
+                if (transaction) {
+                    transaction.status = 'completed';
+                }
+            }, 5000);
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Allow login with Enter key
+        document.getElementById('password').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                login();
+            }
+        });
+    </script>
+</body>
+</html>

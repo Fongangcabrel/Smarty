@@ -1,0 +1,2795 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Must be in the head section -->
+        <link rel="manifest" href="manifest.json">  
+      </head>
+    <!-- Add these to your existing head section -->
+<meta name="theme-color" content="#0056b3">
+<meta name="description" content="Smart City Travel - Ride hailing app">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/icons/icon-192.png">
+<!-- iOS meta tags -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-title" content="SmartCityTravel">
+<link rel="Icons" href="assets/icons/icon-192.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SmartY</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Login/Sign-in Page Specific Styles */
+        .auth-page {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            max-width: 100vw;
+            background-image: url('assets/images/backgrounds/cbg1.png');
+            background-size: inherit;
+            background-position: inherit;
+            background-repeat: repeat;
+        }
+        
+        /* General Styles for Login/Sign-in Form */
+        .form-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 300px;
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        .form-container h3 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #0056b3;
+            color: #060202;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .form-container button:hover {
+            background-color: #d9ff00;
+        }
+
+        .form-container a {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .form-container a:hover {
+            text-decoration: underline;
+        }
+
+        /* General Styles for Dashboard */
+        .dashboard-container {
+            display: none; /* Hide dashboard by default */
+            width: 100%;
+            max-width: 414px; /* iPhone XR width */
+            height: 896px; /* iPhone XR height */
+            margin: 0 auto;
+            background-color: #fff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            text-align: center;
+            padding: 15px;
+            margin: 0;
+            background: linear-gradient(135deg, #007bff, #00bfff);
+            color: blue;
+            font-family: Arial, Helvetica, sans-serif;
+            background-image: url("assets/images/logo/logo.jpg");
+            background-repeat: repeat;
+            background-size: contain;
+            background-position: center;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-around;
+            background: linear-gradient(135deg, #13e8e8, #190abe);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .top-nav button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s ease, color 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        .top-nav button:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .top-nav button.active {
+            background: rgba(255, 255, 255, 0.3);
+            font-weight: bold;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 250px;
+            position: relative;
+            margin: 10px 0;
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .content {
+            padding: 10px;
+            height: calc(100% - 450px); /* Adjust based on other elements */
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group input[type="time"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .ride-options {
+            margin-top: 15px;
+        }
+
+        .ride-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .ride-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .ride-option img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .ride-option .details {
+            flex: 1;
+        }
+
+        .ride-option .details h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .ride-option .details p {
+            margin: 5px 0;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .ride-option .actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ride-option .actions select {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .ride-option .actions button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background: linear-gradient(135deg, #007bff, #00bfff);
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s ease;
+        }
+
+        .ride-option .actions button:hover {
+            background: linear-gradient(135deg, #0056b3, #0099cc);
+        }
+
+        .view-driver-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s ease;
+            margin-left: 5px;
+        }
+
+        .view-driver-btn:hover {
+            background: linear-gradient(135deg, #388E3C, #1B5E20);
+        }
+
+        #add-stop {
+            width: 100%;
+            padding: 8px;
+            background: linear-gradient(135deg, #007bff, #00bfff);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        #add-stop:hover {
+            background: linear-gradient(135deg, #0056b3, #0099cc);
+        }
+
+        .delete-stop {
+            background: #ff4d4d;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .delete-stop:hover {
+            background: #cc0000;
+        }
+
+        #booking-message {
+            text-align: center;
+            margin-top: 10px;
+            color: green;
+            font-weight: bold;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            max-width: 414px; /* Match iPhone XR width */
+            background: linear-gradient(135deg, #007bff, #00bfff);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 5px 0;
+            z-index: 10;
+        }
+
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease, color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px;
+            border-radius: 20px;
+        }
+
+        .bottom-nav button:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .bottom-nav button.active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .bottom-nav button span {
+            font-size: 10px;
+            margin-top: 3px;
+            color: #fff;
+        }
+
+        /* My bookings Styles */
+        .ride-details {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin: 20px 0;
+            padding: 15px;
+        }
+
+        .user-ride {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .user-ride:last-child {
+            border-bottom: none;
+        }
+
+        .ride-detail-title {
+            font-weight: bold;
+        }
+
+        .ride-detail {
+            font-size: 0.9em;
+            color: #666;
+            display: block;
+        }
+
+        /* Message Section Styles */
+        .message-container {
+            padding: 10px;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .message-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .message-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .message-header p {
+            margin: 5px 0 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .chat-container {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .received {
+            background-color: #e9e9e9;
+            align-self: flex-start;
+        }
+
+        .sent {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .message-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .message-input button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .message-input button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Feedback Section Styles */
+        .feedback-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .feedback-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .rating-container {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .star {
+            font-size: 30px;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffcc00;
+        }
+
+        .feedback-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .feedback-tag {
+            padding: 5px 10px;
+            background-color: #e9e9e9;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .feedback-tag:hover,
+        .feedback-tag.selected {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .feedback-comment {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            resize: none;
+            font-size: 14px;
+        }
+
+        .submit-feedback {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .submit-feedback:hover {
+            background-color: #0056b3;
+        }
+
+        .recent-rides {
+            margin-top: 20px;
+        }
+
+        .ride-to-rate {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .ride-to-rate:hover {
+            background-color: #f5f5f5;
+        }
+
+        .ride-to-rate h4 {
+            margin: 0 0 5px 0;
+        }
+
+        .ride-to-rate p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Payment Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #0056b3;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-method:hover {
+            border-color: #0056b3;
+            background-color: #f0f7ff;
+        }
+
+        .payment-method.selected {
+            border-color: #0056b3;
+            background-color: #e6f0ff;
+        }
+
+        .payment-method img {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+        }
+
+        .payment-method .details h4 {
+            margin: 0 0 5px 0;
+        }
+
+        .payment-method .details p {
+            margin: 0;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .payment-form {
+            margin-top: 20px;
+        }
+
+        .payment-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .payment-form .payment-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .payment-form .payment-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .pay-now {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .pay-now:hover {
+            background-color: #003d82;
+        }
+
+        .cancel-pay {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .cancel-pay:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Profile Section Styles */
+        .profile-section {
+            padding: 15px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #0056b3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-right: 20px;
+        }
+
+        .profile-info h2 {
+            margin: 0 0 5px 0;
+        }
+
+        .profile-info p {
+            margin: 0;
+            color: #666;
+        }
+
+        .profile-details {
+            margin-top: 20px;
+        }
+
+        .profile-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .profile-detail:last-child {
+            border-bottom: none;
+        }
+
+        .profile-detail .label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .profile-detail .value {
+            color: #666;
+        }
+
+        .profile-actions {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .profile-action-btn {
+            padding: 12px;
+            border-radius: 5px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .edit-profile {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .edit-profile:hover {
+            background-color: #003d82;
+        }
+
+        .logout {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .logout:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Payment History Styles */
+        .payment-history {
+            margin-top: 20px;
+        }
+
+        .payment-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .payment-item:last-child {
+            border-bottom: none;
+        }
+
+        .payment-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .payment-item-title {
+            font-weight: bold;
+        }
+
+        .payment-item-amount {
+            font-weight: bold;
+            color: #0056b3;
+        }
+
+        .payment-item-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Edit Profile Modal */
+        .edit-profile-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .edit-profile-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .edit-profile-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .edit-profile-form input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .edit-profile-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .edit-profile-buttons button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .save-profile {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .cancel-edit {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Add Payment Method Modal */
+        .add-payment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .add-payment-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .payment-method-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .payment-method-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .payment-method-option.selected {
+            border-color: #0056b3;
+            background-color: #f0f7ff;
+        }
+
+        .payment-method-option img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .payment-method-option span {
+            font-weight: bold;
+        }
+
+        .add-payment-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .add-payment-buttons button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .save-payment {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .cancel-payment {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Driver Info Modal */
+        .driver-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .driver-modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .driver-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .driver-modal-header h3 {
+            margin: 0;
+            color: #0056b3;
+        }
+
+        .close-driver-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .driver-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .driver-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            object-fit: cover;
+        }
+
+        .driver-details {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .driver-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .driver-detail:last-child {
+            border-bottom: none;
+        }
+
+        .driver-detail .label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .driver-detail .value {
+            color: #666;
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 1100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+
+        .notification.success {
+            background-color: #4CAF50;
+        }
+
+        .notification.error {
+            background-color: #F44336;
+        }
+
+        .notification.info {
+            background-color: #2196F3;
+        }
+
+        /* User Session History */
+        .session-history {
+            margin-top: 20px;
+        }
+
+        .session-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .session-item:last-child {
+            border-bottom: none;
+        }
+
+        .session-time {
+            font-weight: bold;
+            color: #0056b3;
+        }
+
+        .session-device {
+            color: #666;
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 20px;
+                padding: 10px;
+            }
+
+            .top-nav button {
+                font-size: 14px;
+                padding: 5px 8px;
+            }
+
+            .ride-option img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .ride-option .details h3 {
+                font-size: 14px;
+            }
+
+            .ride-option .details p {
+                font-size: 10px;
+            }
+
+            .ride-option .actions button {
+                padding: 6px 12px;
+                font-size: 10px;
+            }
+
+            .bottom-nav button {
+                font-size: 18px;
+            }
+
+            .bottom-nav button span {
+                font-size: 8px;
+            }
+
+            .star {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login/Sign-in Page -->
+    <div class="auth-page" id="authPage">
+        <!-- Login Form -->
+        <div class="form-container active" id="loginForm">
+            <h3>Login</h3>
+            <form id="loginFormSubmit">
+                <input type="email" id="loginEmail" placeholder="Email Address" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <a href="#" id="showSignUp">Don't have an account? Sign Up</a>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div class="form-container" id="signUpForm">
+            <h3>Sign Up </h3>
+            <p>WELCOME AT SMART CITY TRAVEL start a new smart ride experience</p>
+            <form id="signUpFormSubmit">
+                <input type="text" id="signUpName" placeholder="Full Name" required>
+                <input type="email" id="signUpEmail" placeholder="Email Address" required>
+                <input type="tel" id="signUpPhone" placeholder="Phone Number" required>
+                <input type="password" id="signUpPassword" placeholder="Password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+            <a href="#" id="showLogin">Already have an account? Login</a>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard-container" id="dashboard">
+        <!-- Header -->
+        <h1><marquee>SMART CITY TRAVEL</marquee></h1>
+
+        <!-- Top Navigation Bar (will be toggled based on section) -->
+        <div class="top-nav" id="topNav">
+            <button class="active" onclick="showRideType('one-way')">One-Way</button>
+            <button onclick="showRideType('two-way')">Two-Way</button>
+            <button onclick="showRideType('multi-way')">Multi-Way</button>
+            <button onclick="showRideType('car-rental')">Car Rental</button>
+        </div>
+
+        <!-- Map Container (Only for Home) -->
+        <div class="map-container" id="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d15886.56223805416!2d10.417310283362449!3d5.471372572598232!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1s0x105f9aa9332faf33%3A0xcd6d3c41ff91e0c6!2seveche%2C%20FCGJ%2B5VR%2C%20Bafoussam!3m2!1d5.4754875!2d10.4322272!4m5!1s0x105f900ba164ac93%3A0x6960fb401f849922!2sLyc%C3%A9e%20Classique%20de%20Bafoussam%2C%20Bored%2C%20Bafoussam!3m2!1d5.4676089!2d10.4218906!5e0!3m2!1sfr!2scm!4v1742631857658!5m2!1sfr!2scm" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+
+        <!-- Content Section -->
+        <div class="content" id="home">
+            <!-- Content will be dynamically updated based on the selected ride type -->
+        </div>
+
+        <!-- Bottom Navigation Bar with Icons -->
+        <div class="bottom-nav">
+            <button class="active" onclick="showSection('home')">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </button>
+            <button onclick="showSection('My bookings')">
+                <i class="fas fa-bookmark"></i>
+                <span>My bookings</span>
+            </button>
+            <button onclick="showSection('message')">
+                <i class="fas fa-comment-dots"></i>
+                <span>Message</span>
+            </button>
+            <button onclick="showSection('profile')">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Complete Payment</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="payment-methods">
+                <div class="payment-method" onclick="selectPaymentMethod('orange')">
+                    <img src="assets/images/payment/orange.png" alt="Orange Money">
+                    <div class="details">
+                        <h4>Orange Money</h4>
+                        <p>Pay with your Orange Money account</p>
+                    </div>
+                </div>
+                <div class="payment-method" onclick="selectPaymentMethod('mtn')">
+                    <img src="assets/images/payment/mtn.jpeg">
+                    <div class="details">
+                        <h4>MTN Mobile Money</h4>
+                        <p>Pay with your MTN Mobile Money account</p>
+                    </div>
+                </div>
+            </div>
+            <div class="payment-form" id="paymentForm">
+                <input type="tel" id="mobileNumber" placeholder="Enter your mobile number">
+                <input type="text" id="paymentCode" placeholder="Enter payment code">
+                <div class="payment-buttons">
+                    <button class="pay-now" onclick="processPayment()">Pay Now</button>
+                    <button class="cancel-pay" onclick="cancelPayment()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="edit-profile-modal" id="editProfileModal">
+        <div class="edit-profile-content">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="close-modal" onclick="closeEditProfileModal()">&times;</button>
+            </div>
+            <form class="edit-profile-form" id="editProfileForm">
+                <input type="text" id="editName" placeholder="Full Name" required>
+                <input type="email" id="editEmail" placeholder="Email Address" required>
+                <input type="tel" id="editPhone" placeholder="Phone Number" required>
+                <div class="edit-profile-buttons">
+                    <button type="button" class="cancel-edit" onclick="closeEditProfileModal()">Cancel</button>
+                    <button type="submit" class="save-profile">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Payment Method Modal -->
+    <div class="add-payment-modal" id="addPaymentModal">
+        <div class="add-payment-content">
+            <div class="modal-header">
+                <h3>Add Payment Method</h3>
+                <button class="close-modal" onclick="closeAddPaymentModal()">&times;</button>
+            </div>
+            <div class="payment-method-options">
+                <div class="payment-method-option" onclick="selectNewPaymentMethod('orange')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Orange_Money_logo.svg/1200px-Orange_Money_logo.svg.png" alt="Orange Money">
+                    <span>Orange Money</span>
+                </div>
+                <div class="payment-method-option" onclick="selectNewPaymentMethod('mtn')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/MTN_Momo_logo.svg/1200px-MTN_Momo_logo.svg.png" alt="MTN Mobile Money">
+                    <span>MTN Mobile Money</span>
+                </div>
+            </div>
+            <div class="payment-form" id="newPaymentForm">
+                <input type="tel" id="newMobileNumber" placeholder="Enter your mobile number">
+                <input type="text" id="newPaymentName" placeholder="Account name (optional)">
+            </div>
+            <div class="add-payment-buttons">
+                <button type="button" class="cancel-payment" onclick="closeAddPaymentModal()">Cancel</button>
+                <button type="button" class="save-payment" onclick="savePaymentMethod()">Save Payment Method</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Driver Info Modal -->
+    <div class="driver-modal" id="driverModal">
+        <div class="driver-modal-content">
+            <div class="driver-modal-header">
+                <h3>Driver Information</h3>
+                <button class="close-driver-modal" onclick="closeDriverModal()">&times;</button>
+            </div>
+            <div class="driver-info">
+                <img id="driverAvatar" class="driver-avatar" src="https://via.placeholder.com/100" alt="Driver">
+                <h2 id="driverName">Driver Name</h2>
+                <p id="driverCarInfo">Car Model - License Plate</p>
+                
+                <div class="driver-details">
+                    <div class="driver-detail">
+                        <span class="label">Gender:</span>
+                        <span class="value" id="driverGender">Male</span>
+                    </div>
+                    <div class="driver-detail">
+                        <span class="label">Phone:</span>
+                        <span class="value" id="driverPhone">+237 6XX XXX XXX</span>
+                    </div>
+                    <div class="driver-detail">
+                        <span class="label">Rating:</span>
+                        <span class="value" id="driverRating">4.8 ★</span>
+                    </div>
+                    <div class="driver-detail">
+                        <span class="label">Experience:</span>
+                        <span class="value" id="driverExperience">3 years</span>
+                    </div>
+                    <div class="driver-detail">
+                        <span class="label">Car Type:</span>
+                        <span class="value" id="driverCarType">Standard</span>
+                    </div>
+                    <div class="driver-detail">
+                        <span class="label">Trips Completed:</span>
+                        <span class="value" id="driverTrips">1,250</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Element -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Constants for pricing and time estimation
+        const BASE_RATE_PER_KM = 100; // 100 XAF per km
+        const STANDARD_TO_PREMIUM_MULTIPLIER = 2; // Premium costs double standard
+        const TIME_PER_KM = 5; // 5 minutes per km
+        const BASE_ARRIVAL_TIME = 10; // 10 minutes base arrival time
+
+        // Sample distance data (in km) - in a real app, you'd calculate this from actual locations
+        const SAMPLE_DISTANCES = {
+            'one-way': 2,
+            'two-way': 4, // Round trip is double one-way
+            'multi-way': 6 // Multi-way is typically longer
+        };
+
+        // Ride type multipliers
+        const RIDE_TYPE_MULTIPLIERS = {
+            'one-way': 1,
+            'two-way': 1.8, // Slightly less than double for round trip
+            'multi-way': 2.5 // More stops means higher complexity
+        };
+
+        // Database of registered users (simulated)
+        const registeredUsers = [
+            {
+                email: "cabrel@example.com",
+                password: "password123",
+                name: "Fongang Cabrel",
+                phone: "677889900"
+            }
+        ];
+
+        // Driver database with detailed information
+        const drivers = {
+            "ABC 1234": {
+                name: "John Doe",
+                gender: "Male",
+                phone: "677889911",
+                rating: 4.8,
+                experience: "3 years",
+                carType: "Standard",
+                tripsCompleted: 1250,
+                image: "https://randomuser.me/api/portraits/men/32.jpg",
+                messages: [
+                    { text: "Hello! I've arrived at your pickup location.", sent: false, timestamp: new Date(Date.now() - 3600000) },
+                    { text: "No problem, I'll wait for you.", sent: false, timestamp: new Date(Date.now() - 1800000) }
+                ]
+            },
+            "XYZ 9876": {
+                name: "Marie Curie",
+                gender: "Female",
+                phone: "677889922",
+                rating: 4.9,
+                experience: "5 years",
+                carType: "Premium",
+                tripsCompleted: 2100,
+                image: "https://randomuser.me/api/portraits/women/44.jpg",
+                messages: [
+                    { text: "I'm on my way to your location.", sent: false, timestamp: new Date(Date.now() - 7200000) },
+                    { text: "Please be ready when I arrive.", sent: false, timestamp: new Date(Date.now() - 5400000) }
+                ]
+            }
+        };
+
+        // Current user data with session history
+        let currentUser = null;
+
+        // Current booking information
+        let currentBooking = null;
+        // Current chat information
+        let currentChat = null;
+
+        // Toggle between Login and Sign Up forms
+        const loginForm = document.getElementById('loginForm');
+        const signUpForm = document.getElementById('signUpForm');
+        const showSignUpLink = document.getElementById('showSignUp');
+        const showLoginLink = document.getElementById('showLogin');
+        const authPage = document.getElementById('authPage');
+        const dashboard = document.getElementById('dashboard');
+        const topNav = document.getElementById('topNav');
+        const notification = document.getElementById('notification');
+
+        showSignUpLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.classList.remove('active');
+            signUpForm.classList.add('active');
+        });
+
+        showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            signUpForm.classList.remove('active');
+            loginForm.classList.add('active');
+        });
+
+        // Show notification
+        function showNotification(message, type = 'info', duration = 3000) {
+            notification.textContent = message;
+            notification.className = 'notification';
+            notification.classList.add(type, 'show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, duration);
+        }
+
+        // Handle Login Form Submission
+        document.getElementById('loginFormSubmit').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Check if user exists and password matches
+            const user = registeredUsers.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                // Record login session
+                const session = {
+                    loginTime: new Date(),
+                    device: navigator.userAgent,
+                    ip: '192.168.1.1' // In a real app, you'd get this from the server
+                };
+                
+                // Set user data
+                currentUser = {
+                    name: user.name,
+                    email: user.email,
+                    phone: user.phone,
+                    rides: [],
+                    paymentMethods: [
+                        { type: "orange", number: user.phone, name: "Orange Money" }
+                    ],
+                    sessions: [session],
+                    messages: [
+                        { 
+                            driverId: "ABC 1234",
+                            driverName: "John Doe",
+                            messages: [
+                                { text: "Thanks! I'll be there in 2 minutes.", sent: true, timestamp: new Date(Date.now() - 2700000) }
+                            ]
+                        }
+                    ],
+                    ratings: []
+                };
+                
+                authPage.style.display = 'none';
+                dashboard.style.display = 'block';
+                // Show home section by default
+                showSection('home');
+                
+                showNotification('Login successful!', 'success');
+            } else {
+                showNotification('Invalid email or password. Please try again.', 'error');
+            }
+        });
+
+        // Handle Sign Up Form Submission
+        document.getElementById('signUpFormSubmit').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signUpName').value;
+            const email = document.getElementById('signUpEmail').value;
+            const phone = document.getElementById('signUpPhone').value;
+            const password = document.getElementById('signUpPassword').value;
+
+            // Validate inputs
+            if (!name || !email || !phone || !password) {
+                showNotification('Please fill out all fields.', 'error');
+                return;
+            }
+
+            // Check if user already exists
+            const userExists = registeredUsers.some(u => u.email === email);
+            if (userExists) {
+                showNotification('An account with this email already exists.', 'error');
+                return;
+            }
+
+            // Add new user to registered users
+            const newUser = {
+                email: email,
+                password: password,
+                name: name,
+                phone: phone
+            };
+            registeredUsers.push(newUser);
+
+            // Record signup session
+            const session = {
+                loginTime: new Date(),
+                device: navigator.userAgent,
+                ip: '192.168.1.1' // In a real app, you'd get this from the server
+            };
+            
+            // Automatically log in the new user
+            currentUser = {
+                name: name,
+                email: email,
+                phone: phone,
+                rides: [],
+                paymentMethods: [
+                    { type: "orange", number: phone, name: "Orange Money" }
+                ],
+                sessions: [session],
+                messages: [],
+                ratings: []
+            };
+            
+            // Hide auth page and show dashboard
+            authPage.style.display = 'none';
+            dashboard.style.display = 'block';
+            
+            // Show home section by default
+            showSection('home');
+            
+            // Show success message
+            showNotification('Account created and logged in successfully!', 'success');
+            
+            // Clear the sign up form
+            document.getElementById('signUpName').value = '';
+            document.getElementById('signUpEmail').value = '';
+            document.getElementById('signUpPhone').value = '';
+            document.getElementById('signUpPassword').value = '';
+            
+            // Switch back to login form for future logins
+            signUpForm.classList.remove('active');
+            loginForm.classList.add('active');
+        });
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        function selectPaymentMethod(method) {
+            const methods = document.querySelectorAll('.payment-method');
+            methods.forEach(m => m.classList.remove('selected'));
+            
+            if (method === 'orange') {
+                methods[0].classList.add('selected');
+                document.getElementById('mobileNumber').placeholder = "Orange Money number";
+                document.getElementById('paymentCode').placeholder = "Orange Money code";
+            } else if (method === 'mtn') {
+                methods[1].classList.add('selected');
+                document.getElementById('mobileNumber').placeholder = "MTN Mobile Money number";
+                document.getElementById('paymentCode').placeholder = "MTN Mobile Money code";
+            }
+        }
+
+        function processPayment() {
+            const mobileNumber = document.getElementById('mobileNumber').value;
+            const paymentCode = document.getElementById('paymentCode').value;
+            
+            if (!mobileNumber || !paymentCode) {
+                showNotification('Please fill in all payment details', 'error');
+                return;
+            }
+            
+            // Simulate payment processing
+            showNotification('Processing payment...', 'info');
+            
+            setTimeout(() => {
+                closeModal();
+                showNotification('Payment successful! Your ride has been booked.', 'success');
+                
+                // Show booking confirmation
+                const messageDiv = document.getElementById('booking-message');
+                if (messageDiv) {
+                    messageDiv.textContent = 'Your ride has been booked successfully!';
+                }
+                
+                // Complete the booking
+                completeBooking();
+            }, 1500);
+        }
+
+        function cancelPayment() {
+            closeModal();
+            showNotification('Payment cancelled', 'info');
+        }
+
+        // Driver modal functions
+        function openDriverModal(driverId) {
+            const driver = drivers[driverId];
+            if (!driver) return;
+            
+            document.getElementById('driverAvatar').src = driver.image;
+            document.getElementById('driverName').textContent = driver.name;
+            document.getElementById('driverCarInfo').textContent = `${driver.carType} Car - ${driverId}`;
+            document.getElementById('driverGender').textContent = driver.gender;
+            document.getElementById('driverPhone').textContent = `+237 ${driver.phone}`;
+            document.getElementById('driverRating').textContent = `${driver.rating} ★`;
+            document.getElementById('driverExperience').textContent = driver.experience;
+            document.getElementById('driverCarType').textContent = driver.carType;
+            document.getElementById('driverTrips').textContent = driver.tripsCompleted.toLocaleString();
+            
+            document.getElementById('driverModal').style.display = 'flex';
+        }
+
+        function closeDriverModal() {
+            document.getElementById('driverModal').style.display = 'none';
+        }
+
+        // Profile modal functions
+        function openEditProfileModal() {
+            if (!currentUser) return;
+            
+            document.getElementById('editName').value = currentUser.name;
+            document.getElementById('editEmail').value = currentUser.email;
+            document.getElementById('editPhone').value = currentUser.phone;
+            document.getElementById('editProfileModal').style.display = 'flex';
+        }
+
+        function closeEditProfileModal() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        function saveProfileChanges() {
+            if (!currentUser) return;
+            
+            const name = document.getElementById('editName').value;
+            const email = document.getElementById('editEmail').value;
+            const phone = document.getElementById('editPhone').value;
+            
+            if (!name || !email || !phone) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            currentUser.name = name;
+            currentUser.email = email;
+            currentUser.phone = phone;
+            
+            // Update in registered users (simulated database)
+            const userIndex = registeredUsers.findIndex(u => u.email === currentUser.email);
+            if (userIndex !== -1) {
+                registeredUsers[userIndex].name = name;
+                registeredUsers[userIndex].phone = phone;
+            }
+            
+            closeEditProfileModal();
+            showSection('profile'); // Refresh profile view
+            showNotification('Profile updated successfully!', 'success');
+        }
+
+        // Payment method modal functions
+        function openAddPaymentModal() {
+            document.getElementById('addPaymentModal').style.display = 'flex';
+        }
+
+        function closeAddPaymentModal() {
+            document.getElementById('addPaymentModal').style.display = 'none';
+        }
+
+        function selectNewPaymentMethod(method) {
+            const methods = document.querySelectorAll('.payment-method-option');
+            methods.forEach(m => m.classList.remove('selected'));
+            
+            if (method === 'orange') {
+                methods[0].classList.add('selected');
+                document.getElementById('newMobileNumber').placeholder = "Orange Money number";
+            } else if (method === 'mtn') {
+                methods[1].classList.add('selected');
+                document.getElementById('newMobileNumber').placeholder = "MTN Mobile Money number";
+            }
+        }
+
+        function savePaymentMethod() {
+            if (!currentUser) return;
+            
+            const mobileNumber = document.getElementById('newMobileNumber').value;
+            const paymentName = document.getElementById('newPaymentName').value;
+            const selectedMethod = document.querySelector('.payment-method-option.selected');
+            
+            if (!mobileNumber || !selectedMethod) {
+                showNotification('Please select a payment method and enter your mobile number', 'error');
+                return;
+            }
+            
+            const methodType = selectedMethod.querySelector('span').textContent;
+            
+            // Add new payment method
+            currentUser.paymentMethods.push({
+                type: methodType.toLowerCase().includes('orange') ? 'orange' : 'mtn',
+                number: mobileNumber,
+                name: paymentName || methodType
+            });
+            
+            closeAddPaymentModal();
+            showSection('profile'); // Refresh profile view
+            showNotification('Payment method added successfully!', 'success');
+        }
+
+        // Dashboard Functions
+        function showRideType(type) {
+            if (!currentUser) {
+                showNotification('Please login to access ride options', 'error');
+                return;
+            }
+            
+            const tabs = document.querySelectorAll('.top-nav button');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            const activeTab = document.querySelector(`.top-nav button[onclick="showRideType('${type}')"]`);
+            activeTab.classList.add('active');
+
+            const content = document.querySelector('.content');
+            content.innerHTML = '';
+
+            // Calculate base distance and time for this ride type
+            const baseDistance = SAMPLE_DISTANCES[type] || 2;
+            const baseTime = Math.round(baseDistance * TIME_PER_KM);
+            const rideTypeMultiplier = RIDE_TYPE_MULTIPLIERS[type] || 1;
+
+            // Calculate prices
+            const standardPrice = Math.round(baseDistance * BASE_RATE_PER_KM * rideTypeMultiplier);
+            const premiumPrice = standardPrice * STANDARD_TO_PREMIUM_MULTIPLIER;
+
+            // Calculate arrival times (premium might be slightly faster)
+            const standardArrivalTime = BASE_ARRIVAL_TIME + baseTime;
+            const premiumArrivalTime = BASE_ARRIVAL_TIME + Math.round(baseTime * 0.9); // Premium is 10% faster
+
+            if (type === 'one-way') {
+                content.innerHTML = `
+                    <div class="form-group">
+                        <label for="pickup">Pickup Location</label>
+                        <input type="text" id="pickup" placeholder="Enter pickup location">
+                    </div>
+                    <div class="form-group">
+                        <label for="pickup-time">Pickup Time</label>
+                        <input type="time" id="pickup-time" placeholder="Enter pickup time">
+                    </div>
+                    <div class="form-group">
+                        <label for="dropoff">Drop-off Location</label>
+                        <input type="text" id="dropoff" placeholder="Enter drop-off location">
+                    </div>
+                    <div class="ride-options">
+                        <div class="ride-option">
+                            <img src="assets/images/cars/car-standard.jpg" alt="Standard Car">
+                            <div class="details">
+                                <h3>Standard Car</h3> 
+                                <p>ABC 1234</p>
+                                <p>Estimated arrival: ${standardArrivalTime} min</p>
+                                <p>${standardPrice} XAF (${baseDistance} km)</p>
+                            </div>
+                            <div class="actions">
+                                <select id="standard-seats">
+                                    <option value="1">1 Seat</option>
+                                    <option value="2">2 Seats</option>
+                                    <option value="3">3 Seats</option>
+                                    <option value="4">4 Seats</option>
+                                </select>
+                                <button class="view-driver-btn" onclick="openDriverModal('ABC 1234')">View Driver</button>
+                                <button onclick="bookRide('Standard Car', 'ABC 1234', ${standardPrice}, 'one-way')">Book Now</button>
+                            </div>
+                        </div>
+                        <div class="ride-option">
+                            <img src="assets/images/cars/car-premium.jpg" alt="Premium Car">
+                            <div class="details">
+                                <h3>Premium Car</h3>
+                                <p>XYZ 9876</p>
+                                <p>Estimated arrival: ${premiumArrivalTime} min</p>
+                                <p>${premiumPrice} XAF (${baseDistance} km)</p>
+                            </div>
+                            <div class="actions">
+                                <select id="premium-seats">
+                                    <option value="1">1 Seat</option>
+                                    <option value="2">2 Seats</option>
+                                    <option value="3">3 Seats</option>
+                                    <option value="4">4 Seats</option>
+                                </select>
+                                <button class="view-driver-btn" onclick="openDriverModal('XYZ 9876')">View Driver</button>
+                                <button onclick="bookRide('Premium Car', 'XYZ 9876', ${premiumPrice}, 'one-way')">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'two-way') {
+                content.innerHTML = `
+                    <div class="form-group">
+                        <label for="pickup">Pickup Location</label>
+                        <input type="text" id="pickup" placeholder="Enter pickup location">
+                    </div>
+                    <div class="form-group">
+                        <label for="pickup-time">Pickup Time</label>
+                        <input type="time" id="pickup-time" placeholder="Enter pickup time">
+                    </div>
+                    <div class="form-group">
+                        <label for="dropoff">Drop-off Location</label>
+                        <input type="text" id="dropoff" placeholder="Enter drop-off location">
+                    </div>
+                    <div class="form-group">
+                        <label for="return-time">Return Time</label>
+                        <input type="time" id="return-time" placeholder="Enter return time">
+                    </div>
+                    <div class="form-group">
+                        <label for="return-dropoff">Return Drop-off Location</label>
+                        <input type="text" id="return-dropoff" placeholder="Enter return drop-off location">
+                    </div>
+                    <div class="ride-options">
+                        <div class="ride-option">
+                            <img src="assets/images/cars/car-standard.jpg" alt="Standard Car">
+                            <div class="details">
+                                <h3>Standard Car</h3>
+                                <p>ABC 1234</p>
+                                <p>Estimated arrival: ${standardArrivalTime} min</p>
+                                <p>${standardPrice} XAF (${baseDistance} km round trip)</p>
+                            </div>
+                            <div class="actions">
+                                <select id="standard-seats">
+                                    <option value="1">1 Seat</option>
+                                    <option value="2">2 Seats</option>
+                                    <option value="3">3 Seats</option>
+                                    <option value="4">4 Seats</option>
+                                </select>
+                                <button class="view-driver-btn" onclick="openDriverModal('ABC 1234')">View Driver</button>
+                                <button onclick="bookRide('Standard Car', 'ABC 1234', ${standardPrice}, 'two-way')">Book Now</button>
+                            </div>
+                        </div>
+                        <div class="ride-option">
+                            <img src="assets/images/cars/car-premium.jpg" alt="Premium Car">
+                            <div class="details">
+                                <h3>Premium Car</h3>
+                                <p>XYZ 9876</p>
+                                <p>Estimated arrival: ${premiumArrivalTime} min</p>
+                                <p>${premiumPrice} XAF (${baseDistance} km round trip)</p>
+                            </div>
+                            <div class="actions">
+                                <select id="premium-seats">
+                                    <option value="1">1 Seat</option>
+                                    <option value="2">2 Seats</option>
+                                    <option value="3">3 Seats</option>
+                                    <option value="4">4 Seats</option>
+                                </select>
+                                <button class="view-driver-btn" onclick="openDriverModal('XYZ 9876')">View Driver</button>
+                                <button onclick="bookRide('Premium Car', 'XYZ 9876', ${premiumPrice}, 'two-way')">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'multi-way') {
+                content.innerHTML = `
+                    <div class="form-group">
+                        <label for="pickup">Pickup Location</label>
+                        <input type="text" id="pickup" placeholder="Enter pickup location">
+                    </div>
+                    <div class="form-group">
+                        <label for="pickup-time">Pickup Time</label>
+                        <input type="time" id="pickup-time" placeholder="Enter pickup time">
+                    </div>
+                    <div id="stops-container">
+                        <!-- Stops will be dynamically added here -->
+                    </div>
+                    <button id="add-stop" onclick="addStop()">Add Stop</button>
+                    <div class="form-group">
+                        <label for="dropoff">Drop-off Location</label>
+                        <input type="text" id="dropoff" placeholder="Enter drop-off location">
+                    </div>
+                    <div class="ride-options">
+                        <div class="ride-option">
+                            <img src="assets/images/cars/car-standard.jpg" alt="Standard Car">
+                            <div class="details">
+                                <h3>Standard Car</h3>
+                                <p>ABC 1234</p>
+                                <p>Estimated arrival: ${standardArrivalTime} min</p>
+                                <p>${standardPrice} XAF (${baseDistance} km with stops)</p>
+                            </div>
+                            <div class="actions">
+                                <select id="standard-seats">
+                                    <option value="1">1 Seat</option>
+                                    <option value="2">2 Seats</option>
+                                    <option value="3">3 Seats</option>
+                                    <option value="4">4 Seats</option>
+                                </select>
+                                <button class="view-driver-btn" onclick="openDriverModal('ABC 1234')">View Driver</button>
+                                <button onclick="bookRide('Standard Car', 'ABC 1234', ${standardPrice}, 'multi-way')">Book Now</button>
+                            </div>
+                        </div>
+                        <div class="ride-option">
+                            <img src="assets/images/cars/car-premium.jpg" alt="Premium Car">
+                            <div class="details">
+                                <h3>Premium Car</h3>
+                                <p>XYZ 9876</p>
+                                <p>Estimated arrival: ${premiumArrivalTime} min</p>
+                                <p>${premiumPrice} XAF (${baseDistance} km with stops)</p>
+                            </div>
+                            <div class="actions">
+                                <select id="premium-seats">
+                                    <option value="1">1 Seat</option>
+                                    <option value="2">2 Seats</option>
+                                    <option value="3">3 Seats</option>
+                                    <option value="4">4 Seats</option>
+                                </select>
+                                <button class="view-driver-btn" onclick="openDriverModal('XYZ 9876')">View Driver</button>
+                                <button onclick="bookRide('Premium Car', 'XYZ 9876', ${premiumPrice}, 'multi-way')">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="booking-message"></div>
+                `;
+            } else if (type === 'car-rental') {
+                // Car rental pricing is different (per hour)
+                const standardRentalRate = 2000; // XAF per hour
+                const premiumRentalRate = 4000; // XAF per hour
+                
+                content.innerHTML = `
+                    <div class="form-group">
+                        <label for="pickup">Pickup Location</label>
+                        <input type="text" id="pickup" placeholder="Enter pickup location">
+                    </div>
+                    <div class="form-group">
+                        <label for="pickup-time">Pickup Time</label>
+                        <input type="time" id="pickup-time" placeholder="Enter pickup time">
+                    </div>
+                    <div class="form-group">
+                        <label for="rental-duration">Rental Duration (Hours)</label>
+                        <select id="rental-duration">
+                            <option value="1">1 Hour</option>
+                            <option value="2">2 Hours</option>
+                            <option value="3">3 Hours</option>
+                            <option value="4">4 Hours</option>
+                            <option value="5">5 Hours</option>
+                            <option value="6">6 Hours</option>
+                        </select>
+                    </div>
+                    <div class="ride-options">
+                        <div class="ride-option">
+                            <img src="assets/images/cars/car-standard.jpg" alt="Standard Car">
+                            <div class="details">
+                                <h3>Standard Car</h3>
+                                <p>ABC 1234</p>
+                                <p>${standardRentalRate}XAF/hour</p>
+                            </div>
+                            <div class="actions">
+                                <button class="view-driver-btn" onclick="openDriverModal('ABC 1234')">View Driver</button>
+                                <button onclick="bookCar('Standard Car', 'ABC 1234', ${standardRentalRate})">Book Now</button>
+                            </div>
+                        </div>
+                        <div class="ride-option">
+                            <img src="assets/images/cars/car-premium.jpg" alt="Premium Car">
+                            <div class="details">
+                                <h3>Premium Car</h3>
+                                <p>XYZ 9876</p>
+                                <p>${premiumRentalRate}XAF/hour</p>
+                            </div>
+                            <div class="actions">
+                                <button class="view-driver-btn" onclick="openDriverModal('XYZ 9876')">View Driver</button>
+                                <button onclick="bookCar('Premium Car', 'XYZ 9876', ${premiumRentalRate})">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="booking-message"></div>
+                `;
+            }
+        }
+
+        function addStop() {
+            const stopsContainer = document.getElementById('stops-container');
+            const stopCount = stopsContainer.querySelectorAll('.form-group').length + 1;
+
+            const stopDiv = document.createElement('div');
+            stopDiv.className = 'form-group';
+            stopDiv.innerHTML = `
+                <label for="stop-${stopCount}">Stop ${stopCount}</label>
+                <input type="text" id="stop-${stopCount}" placeholder="Enter stop location">
+                <button class="delete-stop" onclick="deleteStop(this)">Delete</button>
+            `;
+            stopsContainer.appendChild(stopDiv);
+        }
+
+        function deleteStop(button) {
+            const stopDiv = button.parentElement;
+            stopDiv.remove();
+            showNotification('Stop removed', 'info');
+        }
+
+        function bookRide(carType, carNumber, price, rideType) {
+            if (!currentUser) {
+                showNotification('Please login to book a ride', 'error');
+                return;
+            }
+            
+            const pickupLocation = document.getElementById('pickup').value;
+            const pickupTime = document.getElementById('pickup-time').value;
+            const dropoffLocation = document.getElementById('dropoff').value;
+            
+            if (!pickupLocation || !pickupTime || !dropoffLocation) {
+                showNotification("Please fill out all required fields.", "error");
+                return;
+            }
+            
+            const seats = carType === 'Standard Car' 
+                ? document.getElementById('standard-seats').value
+                : document.getElementById('premium-seats').value;
+            
+            // Store booking details for payment processing
+            currentBooking = {
+                carType: carType,
+                carNumber: carNumber,
+                price: price,
+                seats: seats,
+                pickupLocation: pickupLocation,
+                pickupTime: pickupTime,
+                dropoffLocation: dropoffLocation,
+                type: 'ride',
+                rideType: rideType
+            };
+            
+            // Open payment modal
+            openModal();
+            showNotification('Proceeding to payment...', 'info');
+        }
+
+        function bookCar(carType, carNumber, pricePerHour) {
+            if (!currentUser) {
+                showNotification('Please login to rent a car', 'error');
+                return;
+            }
+            
+            const pickupLocation = document.getElementById('pickup').value;
+            const pickupTime = document.getElementById('pickup-time').value;
+            const rentalDuration = document.getElementById('rental-duration').value;
+
+            if (!pickupLocation || !pickupTime || !rentalDuration) {
+                showNotification("Please fill out all fields.", "error");
+                return;
+            }
+
+            const totalPrice = pricePerHour * rentalDuration;
+            
+            // Store booking details for payment processing
+            currentBooking = {
+                carType: carType,
+                carNumber: carNumber,
+                price: totalPrice,
+                rentalDuration: rentalDuration,
+                pickupLocation: pickupLocation,
+                pickupTime: pickupTime,
+                type: 'rental'
+            };
+            
+            // Open payment modal
+            openModal();
+            showNotification('Proceeding to payment...', 'info');
+        }
+
+        function completeBooking() {
+            if (!currentBooking || !currentUser) return;
+            
+            // Add to user's ride history
+            const rideDetails = {
+                id: Date.now(),
+                type: currentBooking.type,
+                rideType: currentBooking.rideType || 'one-way',
+                carType: currentBooking.carType,
+                carNumber: currentBooking.carNumber,
+                price: currentBooking.price,
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString(),
+                status: 'completed',
+                paymentMethod: 'Orange Money' // Default for demo
+            };
+            
+            if (currentBooking.type === 'ride') {
+                rideDetails.pickupLocation = currentBooking.pickupLocation;
+                rideDetails.dropoffLocation = currentBooking.dropoffLocation;
+                rideDetails.seats = currentBooking.seats;
+            } else {
+                rideDetails.rentalDuration = currentBooking.rentalDuration;
+            }
+            
+            currentUser.rides.push(rideDetails);
+            
+            // Show confirmation
+            const messageDiv = document.getElementById('booking-message');
+            if (messageDiv) {
+                if (currentBooking.type === 'ride') {
+                    messageDiv.textContent = `You have booked a ${currentBooking.carType} (${currentBooking.carNumber}) for a ${currentBooking.rideType} ride with ${currentBooking.seats} seat(s) for ${currentBooking.price}XAF.`;
+                } else {
+                    messageDiv.textContent = `You have booked a ${currentBooking.carType} (${currentBooking.carNumber}) for ${currentBooking.rentalDuration} hours, starting at ${currentBooking.pickupTime} from ${currentBooking.pickupLocation} for ${currentBooking.price}XAF.`;
+                }
+            }
+            
+            // Reset current booking
+            currentBooking = null;
+        }
+
+        function showSection(section) {
+            if (!currentUser && section !== 'home') {
+                showNotification('Please login to access this section', 'error');
+                return;
+            }
+            
+            const buttons = document.querySelectorAll('.bottom-nav button');
+            buttons.forEach(button => button.classList.remove('active'));
+
+            const activeButton = document.querySelector(`.bottom-nav button[onclick="showSection('${section}')"]`);
+            activeButton.classList.add('active');
+
+            const mapContainer = document.getElementById('map-container');
+            const topNav = document.getElementById('topNav');
+            
+            // Show/hide map and top nav based on section
+            if (section === 'home') {
+                mapContainer.style.display = 'block';
+                topNav.style.display = 'flex';
+                // Show default ride type
+                showRideType('one-way');
+            } else {
+                mapContainer.style.display = 'none';
+                topNav.style.display = 'none';
+                
+                const content = document.querySelector('.content');
+                content.innerHTML = '';
+
+                if (section === 'My bookings') {
+                    let ridesHTML = `
+                        <section class="ride-details">
+                            <h2>My Rides</h2>
+                    `;
+                    
+                    if (currentUser.rides.length === 0) {
+                        ridesHTML += `<p>You haven't taken any rides yet.</p>`;
+                    } else {
+                        currentUser.rides.forEach(ride => {
+                            ridesHTML += `
+                                <div class="user-ride">
+                                    <span class="ride-detail-title">${ride.carType} (${ride.carNumber})</span>
+                                    <span class="ride-detail">Amount: ${ride.price}XAF</span>
+                                    ${ride.type === 'ride' ? 
+                                        `<span class="ride-detail">From: ${ride.pickupLocation}</span>
+                                         <span class="ride-detail">To: ${ride.dropoffLocation}</span>
+                                         <span class="ride-detail">Seats: ${ride.seats}</span>
+                                         <span class="ride-detail">Type: ${ride.rideType}</span>` :
+                                        `<span class="ride-detail">Rental Duration: ${ride.rentalDuration} hours</span>`
+                                    }
+                                    <span class="ride-detail">Date: ${ride.date}</span>
+                                    <span class="ride-detail">Time: ${ride.time}</span>
+                                    <span class="ride-detail">Status: ${ride.status}</span>
+                                    <span class="ride-detail">Payment: ${ride.paymentMethod || 'Not specified'}</span>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    ridesHTML += `</section>`;
+                    content.innerHTML = ridesHTML;
+                } else if (section === 'message') {
+                    // Get all unique drivers the user has messaged with
+                    const drivers = [];
+                    currentUser.messages.forEach(msg => {
+                        if (!drivers.some(d => d.driverId === msg.driverId)) {
+                            drivers.push({
+                                driverId: msg.driverId,
+                                driverName: msg.driverName
+                            });
+                        }
+                    });
+                    
+                    // If no messages yet, show default drivers
+                    if (drivers.length === 0) {
+                        drivers.push({
+                            driverId: "ABC 1234",
+                            driverName: "John Doe"
+                        }, {
+                            driverId: "XYZ 9876",
+                            driverName: "Marie Curie"
+                        });
+                    }
+                    
+                    let messagesHTML = `
+                        <div class="message-container">
+                            <div class="message-header">
+                                <img src="${drivers[0].driverId === "ABC 1234" ? "https://randomuser.me/api/portraits/men/32.jpg" : "https://randomuser.me/api/portraits/women/44.jpg"}" alt="Driver">
+                                <div>
+                                    <h3>${drivers[0].driverName} (${drivers[0].driverId})</h3>
+                                    <p>${drivers[0].driverId === "ABC 1234" ? "Standard Car" : "Premium Car"} • Online</p>
+                                </div>
+                            </div>
+                            
+                            <div class="chat-container" id="chatContainer">
+                    `;
+                    
+                    // Show messages for the first driver by default
+                    const driverMessages = currentUser.messages.find(m => m.driverId === drivers[0].driverId);
+                    const driverAccount = drivers[drivers[0].driverId];
+                    
+                    if (driverMessages) {
+                        // Combine user and driver messages and sort by timestamp
+                        const allMessages = [
+                            ...driverMessages.messages.map(m => ({ ...m, sent: true })),
+                            ...(driverAccount?.messages || [])
+                        ].sort((a, b) => a.timestamp - b.timestamp);
+                        
+                        allMessages.forEach(msg => {
+                            messagesHTML += `
+                                <div class="message ${msg.sent ? 'sent' : 'received'}">
+                                    ${msg.text}
+                                </div>
+                            `;
+                        });
+                    } else if (driverAccount?.messages) {
+                        // Show only driver messages if no user messages yet
+                        driverAccount.messages.forEach(msg => {
+                            messagesHTML += `
+                                <div class="message received">
+                                    ${msg.text}
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    messagesHTML += `
+                            </div>
+                            
+                            <div class="message-input">
+                                <input type="text" id="messageInput" placeholder="Type your message...">
+                                <button onclick="sendMessage('${drivers[0].driverId}', '${drivers[0].driverName}')"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                            
+                            <div class="feedback-section">
+                                <h3>Rate Your Ride</h3>
+                    `;
+                    
+                    // Show recent rides that can be rated
+                    if (currentUser.rides.length > 0) {
+                        messagesHTML += `
+                            <div class="recent-rides">
+                                <h4>Recent Rides</h4>
+                        `;
+                        
+                        currentUser.rides.forEach((ride, index) => {
+                            const driver = drivers[ride.carNumber] || { name: "Unknown Driver" };
+                            messagesHTML += `
+                                <div class="ride-to-rate" onclick="showFeedbackForm('${driver.name}', '${ride.carNumber}', '${ride.carType}', ${index})">
+                                    <h4>${driver.name}</h4>
+                                    <p>${ride.carNumber} • ${ride.carType} • ${ride.date} ${ride.time}</p>
+                                </div>
+                            `;
+                        });
+                        
+                        messagesHTML += `</div>`;
+                    } else {
+                        messagesHTML += `<p>No recent rides to rate yet.</p>`;
+                    }
+                    
+                    messagesHTML += `
+                                <div id="feedbackForm" style="display: none;">
+                                    <h4>Rate <span id="driverName"></span></h4>
+                                    <p>Car: <span id="carDetails"></span></p>
+                                    
+                                    <div class="rating-container">
+                                        <i class="far fa-star star" data-rating="1"></i>
+                                        <i class="far fa-star star" data-rating="2"></i>
+                                        <i class="far fa-star star" data-rating="3"></i>
+                                        <i class="far fa-star star" data-rating="4"></i>
+                                        <i class="far fa-star star" data-rating="5"></i>
+                                    </div>
+                                    
+                                    <div class="feedback-tags">
+                                        <div class="feedback-tag">Polite driver</div>
+                                        <div class="feedback-tag">Clean car</div>
+                                        <div class="feedback-tag">Safe driving</div>
+                                        <div class="feedback-tag">Good route</div>
+                                        <div class="feedback-tag">Fast arrival</div>
+                                        <div class="feedback-tag">Good AC</div>
+                                    </div>
+                                    
+                                    <textarea class="feedback-comment" placeholder="Add additional comments (optional)"></textarea>
+                                    
+                                    <button class="submit-feedback" onclick="submitFeedback()">Submit Feedback</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    content.innerHTML = messagesHTML;
+                    
+                    // Initialize star rating functionality
+                    initializeStarRating();
+                    initializeFeedbackTags();
+                    
+                    // Set current chat
+                    currentChat = {
+                        driverId: drivers[0].driverId,
+                        driverName: drivers[0].driverName
+                    };
+                    
+                    // Scroll to bottom of chat
+                    const chatContainer = document.getElementById('chatContainer');
+                    if (chatContainer) {
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                    }
+                } else if (section === 'profile') {
+                    let paymentMethodsHTML = '';
+                    if (currentUser.paymentMethods.length === 0) {
+                        paymentMethodsHTML = '<p>No payment methods added yet.</p>';
+                    } else {
+                        paymentMethodsHTML = currentUser.paymentMethods.map(method => `
+                            <div class="profile-detail">
+                                <span class="label">${method.name}</span>
+                                <span class="value">${method.number}</span>
+                            </div>
+                        `).join('');
+                    }
+                    
+                    // Calculate average rating
+                    let averageRating = 0;
+                    if (currentUser.ratings.length > 0) {
+                        const total = currentUser.ratings.reduce((sum, rating) => sum + rating.rating, 0);
+                        averageRating = total / currentUser.ratings.length;
+                    }
+
+                    content.innerHTML = `
+                        <div class="profile-section">
+                            <div class="profile-header">
+                                <div class="profile-avatar">${currentUser.name.split(' ').map(n => n[0]).join('')}</div>
+                                <div class="profile-info">
+                                    <h2>${currentUser.name}</h2>
+                                    <p>⭐ ${averageRating.toFixed(1)} (${currentUser.rides.length} rides)</p>
+                                </div>
+                            </div>
+                            
+                            <div class="profile-details">
+                                <div class="profile-detail">
+                                    <span class="label">Email</span>
+                                    <span class="value">${currentUser.email}</span>
+                                </div>
+                                <div class="profile-detail">
+                                    <span class="label">Phone</span>
+                                    <span class="value">${currentUser.phone}</span>
+                                </div>
+                                <div class="profile-detail">
+                                    <span class="label">Joined</span>
+                                    <span class="value">${new Date().toLocaleDateString()}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-history">
+                                <h3>Payment Methods</h3>
+                                ${paymentMethodsHTML}
+                            </div>
+                            
+                            <div class="session-history">
+                                <h3>Recent Sessions</h3>
+                                ${currentUser.sessions.map(session => `
+                                    <div class="session-item">
+                                        <div class="session-time">${new Date(session.loginTime).toLocaleString()}</div>
+                                        <div class="session-device">${session.device}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="profile-actions">
+                                <button class="profile-action-btn edit-profile" onclick="openEditProfileModal()">
+                                    <i class="fas fa-edit"></i> Edit Profile
+                                </button>
+                                <button class="profile-action-btn edit-profile" onclick="openAddPaymentModal()">
+                                    <i class="fas fa-credit-card"></i> Add Payment Method
+                                </button>
+                                <button class="profile-action-btn logout" onclick="logout()">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        // Send message function
+        function sendMessage(driverId, driverName) {
+            if (!currentUser) {
+                showNotification('Please login to send messages', 'error');
+                return;
+            }
+            
+            const messageInput = document.getElementById('messageInput');
+            const messageText = messageInput.value.trim();
+            
+            if (!messageText) {
+                showNotification('Please enter a message', 'error');
+                return;
+            }
+            
+            // Find or create conversation with this driver
+            let conversation = currentUser.messages.find(m => m.driverId === driverId);
+            
+            if (!conversation) {
+                conversation = {
+                    driverId: driverId,
+                    driverName: driverName,
+                    messages: []
+                };
+                currentUser.messages.push(conversation);
+            }
+            
+            // Add new message
+            conversation.messages.push({
+                text: messageText,
+                sent: true,
+                timestamp: new Date()
+            });
+            
+            // Add message to chat container
+            const chatContainer = document.getElementById('chatContainer');
+            if (chatContainer) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message sent';
+                messageDiv.textContent = messageText;
+                chatContainer.appendChild(messageDiv);
+                
+                // Scroll to bottom
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+            
+            // Clear input
+            messageInput.value = '';
+            showNotification('Message sent', 'success');
+            
+            // Simulate driver response after 1-3 seconds
+            setTimeout(() => {
+                const responses = [
+                    "Thanks for your message!",
+                    "I'll be there soon.",
+                    "Please wait a moment.",
+                    "On my way!",
+                    "Got it, thanks!"
+                ];
+                
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                
+                // Add to driver's messages
+                const driverAccount = drivers[driverId];
+                if (driverAccount) {
+                    if (!driverAccount.messages) driverAccount.messages = [];
+                    driverAccount.messages.push({
+                        text: randomResponse,
+                        sent: false,
+                        timestamp: new Date()
+                    });
+                }
+                
+                // Add to chat if this is the current conversation
+                if (currentChat && currentChat.driverId === driverId && chatContainer) {
+                    const responseDiv = document.createElement('div');
+                    responseDiv.className = 'message received';
+                    responseDiv.textContent = randomResponse;
+                    chatContainer.appendChild(responseDiv);
+                    
+                    // Scroll to bottom
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }
+            }, 1000 + Math.random() * 2000);
+        }
+        
+        function editProfile() {
+            alert('Profile editing functionality would be implemented here');
+        }
+        
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                dashboard.style.display = 'none';
+                authPage.style.display = 'flex';
+                document.getElementById('loginForm').classList.add('active');
+                document.getElementById('signUpForm').classList.remove('active');
+                
+                // Record logout time
+                if (currentUser && currentUser.sessions.length > 0) {
+                    currentUser.sessions[currentUser.sessions.length - 1].logoutTime = new Date();
+                }
+                
+                currentUser = null;
+                showNotification('Logged out successfully', 'success');
+            }
+        }
+        
+        // Feedback functions
+        function showFeedbackForm(driverName, carNumber, carType, rideIndex) {
+            document.getElementById('feedbackForm').style.display = 'block';
+            document.getElementById('driverName').textContent = driverName;
+            document.getElementById('carDetails').textContent = `${carNumber} • ${carType}`;
+            
+            // Store which ride is being rated
+            document.getElementById('feedbackForm').setAttribute('data-ride-index', rideIndex);
+            
+            // Scroll to feedback form
+            document.getElementById('feedbackForm').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function initializeStarRating() {
+            const stars = document.querySelectorAll('.star');
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+                    
+                    // Update all stars up to the clicked one
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.classList.add('fas', 'active');
+                            s.classList.remove('far');
+                        } else {
+                            s.classList.add('far');
+                            s.classList.remove('fas', 'active');
+                        }
+                    });
+                });
+                
+                // Add hover effect
+                star.addEventListener('mouseover', function() {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.classList.add('fas');
+                            s.classList.remove('far');
+                        }
+                    });
+                });
+                
+                star.addEventListener('mouseout', function() {
+                    stars.forEach(s => {
+                        if (!s.classList.contains('active')) {
+                            s.classList.add('far');
+                            s.classList.remove('fas');
+                        }
+                    });
+                });
+            });
+        }
+        
+        function initializeFeedbackTags() {
+            const tags = document.querySelectorAll('.feedback-tag');
+            tags.forEach(tag => {
+                tag.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                });
+            });
+        }
+        
+        function submitFeedback() {
+            if (!currentUser) return;
+            
+            const activeStars = document.querySelectorAll('.star.active');
+            const rating = activeStars.length;
+            
+            if (rating === 0) {
+                showNotification('Please select a star rating', 'error');
+                return;
+            }
+            
+            const selectedTags = [];
+            document.querySelectorAll('.feedback-tag.selected').forEach(tag => {
+                selectedTags.push(tag.textContent);
+            });
+            
+            const comment = document.querySelector('.feedback-comment').value;
+            const rideIndex = document.getElementById('feedbackForm').getAttribute('data-ride-index');
+            
+            // Get the ride being rated
+            const ride = currentUser.rides[rideIndex];
+            
+            // Save the rating
+            currentUser.ratings.push({
+                driverId: ride.carNumber,
+                driverName: drivers[ride.carNumber]?.name || "Unknown Driver",
+                rating: rating,
+                tags: selectedTags,
+                comment: comment,
+                date: new Date().toLocaleDateString(),
+                rideType: ride.type,
+                rideId: ride.id
+            });
+            
+            showNotification('Thank you for your feedback!', 'success');
+            document.getElementById('feedbackForm').style.display = 'none';
+            
+            // Clear the form
+            activeStars.forEach(star => {
+                star.classList.remove('fas', 'active');
+                star.classList.add('far');
+            });
+            
+            document.querySelectorAll('.feedback-tag.selected').forEach(tag => {
+                tag.classList.remove('selected');
+            });
+            
+            document.querySelector('.feedback-comment').value = '';
+        }
+        
+        // Handle edit profile form submission
+        document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveProfileChanges();
+        });
+        // PWA Installation
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallButton();
+});
+
+function showInstallButton() {
+  if(document.getElementById('installBtn')) return;
+  
+  const installBtn = document.createElement('button');
+  installBtn.id = 'installBtn';
+  installBtn.innerHTML = '<i class="fas fa-download"></i> Install App';
+  installBtn.style.position = 'fixed';
+  installBtn.style.bottom = '80px';
+  installBtn.style.right = '20px';
+  installBtn.style.zIndex = '1000';
+  installBtn.style.padding = '10px 15px';
+  installBtn.style.backgroundColor = '#0056b3';
+  installBtn.style.color = 'white';
+  installBtn.style.border = 'none';
+  installBtn.style.borderRadius = '20px';
+  installBtn.style.cursor = 'pointer';
+  installBtn.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+  
+  installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        installBtn.style.display = 'none';
+      }
+      deferredPrompt = null;
+    }
+  });
+  
+  document.body.appendChild(installBtn);
+}
+
+// Replace your current SW registration with this:
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => {
+        console.log('✅ Service Worker registered! Scope:', reg.scope);
+        
+        // Force update (helps in development)
+        reg.update();
+      })
+      .catch(err => {
+        console.error('❌ Service Worker failed:', err);
+      });
+  });
+}
+// Enhanced PWA Installation Handler
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallButton();
+  
+  // For debugging
+  console.log('PWA install prompt available');
+});
+
+function showInstallButton() {
+  // Don't show if already installed or button exists
+  if (window.matchMedia('(display-mode: standalone)').matches || 
+      document.getElementById('installBtn')) {
+    return;
+  }
+
+  const installBtn = document.createElement('button');
+  installBtn.id = 'installBtn';
+  installBtn.innerHTML = '<i class="fas fa-download"></i> Install App';
+  installBtn.style.position = 'fixed';
+  installBtn.style.bottom = '80px';
+  installBtn.style.right = '20px';
+  installBtn.style.zIndex = '1000';
+  installBtn.style.padding = '10px 15px';
+  installBtn.style.backgroundColor = '#0056b3';
+  installBtn.style.color = 'white';
+  installBtn.style.border = 'none';
+  installBtn.style.borderRadius = '20px';
+  installBtn.style.cursor = 'pointer';
+  installBtn.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+  
+  installBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+      console.log('User accepted install');
+      installBtn.style.display = 'none';
+    } else {
+      console.log('User declined install');
+    }
+    deferredPrompt = null;
+  });
+  
+  document.body.appendChild(installBtn);
+}
+
+// Enhanced Service Worker Registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js')
+      .then(function(registration) {
+        console.log('ServiceWorker registration successful:', registration.scope);
+        
+        // Check if the app is already installed
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+          console.log('App running in standalone mode');
+        }
+      })
+      .catch(function(err) {
+        console.log('ServiceWorker registration failed:', err);
+      });
+  });
+}
+
+// Check if app is running in standalone mode
+function isRunningStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches || 
+         window.navigator.standalone;
+}
+
+// Periodically check for updates
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload();
+  });
+}
+    </script>
+</body>
+</html>
